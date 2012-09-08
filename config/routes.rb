@@ -1,4 +1,6 @@
 EmberWithCoffee::Application.routes.draw do
+  root :to => 'demo#index'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
