@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Kanji:</b>
+  <%= @word.kanji %>
+</p>
+
+<p>
+  <b>Kana:</b>
+  <%= @word.kana %>
+</p>
+
+<p>
+  <b>Desc:</b>
+  <%= @word.desc %>
+</p>
+
+<p>
+  <b>Article:</b>
+  <%= @word.article_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_word_path(@word) %> |
+<%= link_to 'Back', words_path %>

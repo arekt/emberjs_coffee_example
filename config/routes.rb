@@ -1,4 +1,6 @@
 EmberWithCoffee::Application.routes.draw do
+  resources :words
+
   root :to => 'demo#index'
   match 'dictionary/word/:name' => 'demo#dictionary'
   # The priority is based upon order of creation:

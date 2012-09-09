@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  kanji: MyString
+  kana: MyString
+  desc: MyString
+  article_id: MyString
+
+two:
+  kanji: MyString
+  kana: MyString
+  desc: MyString
+  article_id: MyString
