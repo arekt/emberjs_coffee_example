@@ -11,9 +11,10 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 
-//# require jquery
-//# require jquery_ujs
+//= require jquery
+//= require jquery_ujs
 //= require twitter/bootstrap
+//= require ember_for_jquery1.8
 //= require demo
 //= require_directory ./templates
 

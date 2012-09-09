@@ -1,8 +1,7 @@
 require 'kanji_dictionary'
 class DemoController < ApplicationController
-  layout 'ember'     
   def index
-
+    Rails.logger.debug "DEBUG: Demo/index"
   end
   def dictionary
     dictionary = KanjiDictionary.new
