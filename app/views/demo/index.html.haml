@@ -1,4 +1,12 @@
 - content_for :title, 'Demo Ember.js Application' 
+%script(type="text/x-handlebars")
+  {{#view Ember.View wordsBinding="App.WordsController" class="nav nav-pills" tagName="ul" }}
+  {{#each words }}
+  <li class='active'><a href='#'>{{ kanji }}</a></li>
+  {{/each}}
+  {{/view}}
+
+
 %h2 Hello Again
 %script(type="text/x-handlebars")
   {{view App.SelectableChunks}}

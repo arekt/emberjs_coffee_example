@@ -1,8 +1,23 @@
 Article = Ember.Object.extend(
   title: "Title of article"
   text: "このたびは。大変お世話にな。りありがとう。ございました"
-  content: "このたびは。大変お世話にな。りありがとう。ございました"
+  content: "近世の朝鮮王朝
+講師：東京大学准教授　六反田 豊
+ゲスト：ヒョンギ
+語り：森川智之
+
+14 世紀末、朝鮮半島では李成桂が高麗を滅ぼして朝鮮王朝を建国し、仏教にかわって儒学、とくにそのなかでも朱子学を重視し、学問や独自の文化を発展させた。16 世紀末には豊臣秀吉の軍事侵入で大きな被害を受けたが、一時断絶していた日本との国交が17 世紀初めに回復すると、以後260 年ほどの間、平和的な関係を維持した。この期間に12 回にわたって朝鮮から日本へ派遣された朝鮮国王の使節、通信使に焦点を合わせ、日本との関係を中心にして朝鮮王朝の歴史をみていく。"
 )
+
+
+WordsController = Ember.ArrayController.create(
+  content: []
+  sync: ->
+    $.get("/words", (words)->
+      WordsController.pushObject Word.create(w) for w in words
+    , 'json')
+)
+
 
 Word = Ember.Object.extend(
   kanji : ""
@@ -89,7 +104,7 @@ TextChunk = Ember.View.extend(
       #make some button to select word and then add word to words collection
       #App.data.articles.get('selected').words.push(result.get('firstObject'))
       view = Ember.View.create(
-        layout: Ember.Handlebars.compile("<div class=\"alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>{{yield}}</div>")
+        layout: Ember.Handlebars.compile("<div class=\"span3 alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>{{yield}}</div>")
         template: Ember.Handlebars.compile("{{#each result}}              <h3>{{this.kanji}}{{this.kana}}</h3>              <p>{{this.desc}}</p>              <a class='btn' {{action  add }}>Add</a>              {{/each}}")
         result: result
         add: (event) ->
@@ -141,5 +156,7 @@ SelectableChunks = Ember.CollectionView.extend(
 #$("body").append("<div class=\"alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>"+result_html+"</div>")
 app.SelectableChunks =  SelectableChunks
 app.SelectedChunkView = SelectedChunkView
+app.WordsController = WordsController
+WordsController.sync()
 #chunks.append()
 window.App = app
