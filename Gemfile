@@ -11,6 +11,7 @@ gem "emberjs-rails"
 # in production environments by default.
 group :production do
   gem 'pg'
+  gem 'thin'
 end
 group :development do
   gem 'sqlite3'
