@@ -1,6 +1,6 @@
 EmberWithCoffee::Application.routes.draw do
   root :to => 'demo#index'
-
+  match 'dictionary/word/:name' => 'demo#dictionary'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

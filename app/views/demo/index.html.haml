@@ -1,3 +1,7 @@
-= javascript_include_tag "templates/demo"
+= javascript_include_tag "templates/text_chunk"
+= javascript_include_tag "templates/selected_chunk"
 - content_for :title, 'Demo Ember.js Application' 
 %h2 Hello Again
+%script(type="text/x-handlebars")
+  {{view App.SelectableChunks}}
+  {{view App.SelectedChunkView textBinding="content" hiddenBinding="hidden"}}
