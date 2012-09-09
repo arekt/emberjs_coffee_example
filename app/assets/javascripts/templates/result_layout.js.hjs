@@ -1,0 +1,4 @@
+<div class="alert alert-info">
+  <button type="button" class="close" {{action close}}>×</button>
+  {{yield}}
+</div>

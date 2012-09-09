@@ -18,6 +18,21 @@ WordsController = Ember.ArrayController.create(
     , 'json')
 )
 
+ResultsController = Ember.ArrayController.create(content:[])
+
+ResultView = Ember.View.extend(
+  layoutName: "templates_result_layout"
+  templateName: "templates_result" 
+  resultBinding: "App.ResultsController"
+  add: (event) ->
+    word = event.context
+    word.save()
+    WordsController.pushObject word
+    ResultsController.set 'content', Ember.A()
+  close: (event) ->
+    console.log "clearing results"
+    @result.set('content',Ember.A())
+)
 
 Word = Ember.Object.extend(
   kanji : ""
@@ -27,10 +42,10 @@ Word = Ember.Object.extend(
     word =  
       word:  
         id: @id || null
-        kanji:@kanji
-        kana:@kana
-        desc:@desc
-        article_id:@article_id
+        kanji: @kanji
+        kana: @kana
+        desc: @desc
+        article_id: @article_id
     $.post('words',word)
 )
 
@@ -51,22 +66,22 @@ ToogableView = Ember.Mixin.create(
 
 
 SelectedChunkView = Ember.CollectionView.extend(
-      classNameBindings: ["hidden"]
-      content: (->
-        return []  if @text is `undefined`
-        @getPath "text.letters"
-      ).property("text")
-      classNames: "nav nav-pills"
-      tagName: "ul"
-      itemViewClass: Ember.View.extend(ToogableView,
-        tagName: "li"
-        activeBinding: "content.active"
-        classNameBindings: ["active"]
-        template: Ember.Handlebars.compile("<a href='#'>{{content.content}}</a>")
-        click: (event) ->
-          @toogle "active"
-          console.log @content.index + @content.chunk_start
-      )
+  classNameBindings: ["hidden"]
+  content: (->
+    return []  if @text is `undefined`
+    @getPath "text.letters"
+  ).property("text")
+  classNames: "nav nav-pills"
+  tagName: "ul"
+  itemViewClass: Ember.View.extend(ToogableView,
+    tagName: "li"
+    activeBinding: "content.active"
+    classNameBindings: ["active"]
+    template: Ember.Handlebars.compile("<a href='#'>{{content.content}}</a>")
+    click: (event) ->
+      @toogle "active"
+      console.log @content.index + @content.chunk_start
+  )
 )
 
 TextChunk = Ember.View.extend(
@@ -91,29 +106,17 @@ TextChunk = Ember.View.extend(
     console.log "/dictionary/word/" + selection
     $.get "/dictionary/word/" + selection, (data) ->
       
-      #App.data.news.selected.set('content',data)
-      result = Ember.ArrayController.create(content: $.map(data, (item) ->
-        Word.create
+      ResultsController.pushObject(
+        Word.create(
           kanji: item[0]
           kana: item[1]
           desc: item[2]
           article_id: 1
-
-      ))
-      
+        )
+      ) for item in data
       #make some button to select word and then add word to words collection
       #App.data.articles.get('selected').words.push(result.get('firstObject'))
-      view = Ember.View.create(
-        layout: Ember.Handlebars.compile("<div class=\"span3 alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>{{yield}}</div>")
-        template: Ember.Handlebars.compile("{{#each result}}              <h3>{{this.kanji}}{{this.kana}}</h3>              <p>{{this.desc}}</p>              <a class='btn' {{action  add }}>Add</a>              {{/each}}")
-        result: result
-        add: (event) ->
-          word = event.context
-          word.save()
-          App.data.articles.get("selected").words.pushObject word
-          @remove() # remove view from DOM
-      )
-      view.append "body"
+
 )
 
 SelectableChunks = Ember.CollectionView.extend(
@@ -139,12 +142,10 @@ SelectableChunks = Ember.CollectionView.extend(
               index: index
               chunk_start: position
               active: false
-
           )
         )
         object_chunks.push chunk
         position = position + item.length
-
       @get("article").set "chunks", object_chunks
       console.log @get("article")
       object_chunks
@@ -157,6 +158,8 @@ SelectableChunks = Ember.CollectionView.extend(
 app.SelectableChunks =  SelectableChunks
 app.SelectedChunkView = SelectedChunkView
 app.WordsController = WordsController
+app.ResultsController = ResultsController
+app.ResultView = ResultView
 WordsController.sync()
 #chunks.append()
 window.App = app
