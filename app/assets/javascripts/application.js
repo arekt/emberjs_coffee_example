@@ -15,3 +15,6 @@
 //# require jquery_ujs
 //= require twitter/bootstrap
 //= require demo
+//= require_directory ./templates
+
+
