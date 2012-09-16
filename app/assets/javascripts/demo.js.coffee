@@ -1,6 +1,5 @@
 Article = Ember.Object.extend(
   title: "Title of article"
-  text: "このたびは。大変お世話にな。りありがとう。ございました"
   content: "近世の朝鮮王朝
 講師：東京大学准教授　六反田 豊
 ゲスト：ヒョンギ
