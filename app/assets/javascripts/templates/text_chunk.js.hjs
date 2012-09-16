@@ -1,6 +1,6 @@
 {{view App.SelectedChunkView textBinding="content" hiddenBinding="hidden"}}
 {{#if hidden}} 
-  <a href='#'>{{content.content}}</a>
+  <a href='#' 'class='bigger-font'>{{content.content}}</a>
 {{else}}
   <a class="btn" href="#" {{action search}}>Search</a>
 {{/if}}

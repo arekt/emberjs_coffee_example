@@ -88,10 +88,6 @@ Word = Ember.Object.extend(
 )
 
 app = Ember.Application.create(
-  title: "Hello" 
-  articles: Ember.ArrayController.create(
-    content: [ Article.create() ]
-  )
 )
 
 ToogableView = Ember.Mixin.create(
@@ -162,6 +158,14 @@ SelectableChunks = Ember.CollectionView.extend(
   itemViewClass: TextChunk
 )
 
+ArticlesList = Ember.View.extend(
+  contentBinding: 'App.ArticlesController'
+  itemViewClass: ArticlesList
+  templateName: "templates_articles_list"
+  select: (event)->
+    console.log 'selecting' + event.context
+    ArticlesController.select(event.context)
+)
 
 #$("body").append("<div class=\"alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>"+result_html+"</div>")
 app.SelectableChunks =  SelectableChunks
@@ -170,6 +174,7 @@ app.WordsController = WordsController
 app.ArticlesController = ArticlesController
 app.ResultsController = ResultsController
 app.ResultView = ResultView
+app.ArticlesList = ArticlesList
 window.App = app
 ArticlesController.sync()
 WordsController.sync()
