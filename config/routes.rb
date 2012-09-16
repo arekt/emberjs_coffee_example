@@ -1,4 +1,5 @@
 EmberWithCoffee::Application.routes.draw do
+  resources :articles
   resources :words
 
   root :to => 'demo#index'
