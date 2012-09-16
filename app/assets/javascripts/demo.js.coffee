@@ -8,6 +8,20 @@ Article = Ember.Object.extend(
 14 世紀末、朝鮮半島では李成桂が高麗を滅ぼして朝鮮王朝を建国し、仏教にかわって儒学、とくにそのなかでも朱子学を重視し、学問や独自の文化を発展させた。16 世紀末には豊臣秀吉の軍事侵入で大きな被害を受けたが、一時断絶していた日本との国交が17 世紀初めに回復すると、以後260 年ほどの間、平和的な関係を維持した。この期間に12 回にわたって朝鮮から日本へ派遣された朝鮮国王の使節、通信使に焦点を合わせ、日本との関係を中心にして朝鮮王朝の歴史をみていく。"
 )
 
+ArticlesController = Ember.ArrayController.create(
+  content: []
+  sync: ->
+    $.get("/articles", (articles)->
+      ArticlesController.pushObject Article.create(a) for a in articles
+    , 'json')
+  selected: (->
+    @_selected || @select(@get('firstObject'))
+  ).property("_selected")
+  _selected : null
+  select: (article) ->
+    @set('_selected', article)
+)
+
 
 WordsController = Ember.ArrayController.create(
   content: []
@@ -157,8 +171,10 @@ SelectableChunks = Ember.CollectionView.extend(
 app.SelectableChunks =  SelectableChunks
 app.SelectedChunkView = SelectedChunkView
 app.WordsController = WordsController
+app.ArticlesController = ArticlesController
 app.ResultsController = ResultsController
 app.ResultView = ResultView
 WordsController.sync()
+ArticlesController.sync()
 #chunks.append()
 window.App = app
