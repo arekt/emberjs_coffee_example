@@ -1,11 +1,33 @@
 Article = Ember.Object.extend(
-  title: "Title of article"
-  content: "近世の朝鮮王朝
-講師：東京大学准教授　六反田 豊
-ゲスト：ヒョンギ
-語り：森川智之
-
-14 世紀末、朝鮮半島では李成桂が高麗を滅ぼして朝鮮王朝を建国し、仏教にかわって儒学、とくにそのなかでも朱子学を重視し、学問や独自の文化を発展させた。16 世紀末には豊臣秀吉の軍事侵入で大きな被害を受けたが、一時断絶していた日本との国交が17 世紀初めに回復すると、以後260 年ほどの間、平和的な関係を維持した。この期間に12 回にわたって朝鮮から日本へ派遣された朝鮮国王の使節、通信使に焦点を合わせ、日本との関係を中心にして朝鮮王朝の歴史をみていく。"
+  title: ""
+  content: ""
+  chunks: (->
+    console.log  "computing content..." + @content
+    if @content is `undefined`
+      []
+    else
+      console.log('computing chunks')
+      chunks = @get("content").match(/([^,.、。]+)([,.、。]+)/g)
+      return []  unless chunks
+      object_chunks = []
+      position = 0
+      chunks.forEach (item, index, self) ->
+        chunk = Ember.Object.create(
+          position: position
+          length: item.length
+          content: item
+          letters: item.split("").map((item, index, self) ->
+            Ember.Object.create
+              content: item
+              index: index
+              chunk_start: position
+              active: false
+          )
+        )
+        object_chunks.push chunk
+        position = position + item.length
+      object_chunks
+  ).property("content")
 )
 
 ArticlesController = Ember.ArrayController.create(
@@ -14,8 +36,11 @@ ArticlesController = Ember.ArrayController.create(
     $.get("/articles", (articles)->
       ArticlesController.pushObject Article.create(a) for a in articles
     , 'json')
+    console.log "Finished sync..."
+    @select(ArticlesController.get('firstObject'))
+
   selected: (->
-    @_selected || @select(@get('firstObject'))
+    @_selected
   ).property("_selected")
   _selected : null
   select: (article) ->
@@ -133,36 +158,7 @@ TextChunk = Ember.View.extend(
 )
 
 SelectableChunks = Ember.CollectionView.extend(
-  articleBinding: "App.articles.firstObject"
-  # where chunk start in whole article
-  content: (->
-    if @article is `undefined` or @article.content is `undefined`
-      ['aa','b']
-    else
-      console.log('computing chunks')
-      chunks = @getPath("article.content").match(/([^,.、。]+)([,.、。]+)/g)
-      return []  unless chunks
-      object_chunks = []
-      position = 0
-      chunks.forEach (item, index, self) ->
-        chunk = Ember.Object.create(
-          position: position
-          length: item.length
-          content: item
-          letters: item.split("").map((item, index, self) ->
-            Ember.Object.create
-              content: item
-              index: index
-              chunk_start: position
-              active: false
-          )
-        )
-        object_chunks.push chunk
-        position = position + item.length
-      @get("article").set "chunks", object_chunks
-      console.log @get("article")
-      object_chunks
-  ).property("article")
+  contentBinding: "App.ArticlesController.selected.chunks"
   itemViewClass: TextChunk
 )
 
@@ -174,7 +170,7 @@ app.WordsController = WordsController
 app.ArticlesController = ArticlesController
 app.ResultsController = ResultsController
 app.ResultView = ResultView
-WordsController.sync()
-ArticlesController.sync()
-#chunks.append()
 window.App = app
+ArticlesController.sync()
+WordsController.sync()
+#chunks.append()
