@@ -13,6 +13,7 @@ Article = Ember.Object.extend(
       position = 0
       chunks.forEach (item, index, self) ->
         chunk = Ember.Object.create(
+          selected: false
           position: position
           length: item.length
           content: item
@@ -119,17 +120,10 @@ SelectedChunkView = Ember.CollectionView.extend(
 )
 
 TextChunk = Ember.View.extend(
-  active: false
   hidden: (->
     not @get("active")
   ).property("active")
   templateName: "templates_text_chunk" 
-  click: (event) ->
-    unless @get("active")
-      @getPath("parentView.childViews").setEach "active", false
-      @set "active", true
-      console.log "setting " + this + "to active state"
-
   search: (event) ->
     selection = @getPath("content.letters").filter((item) ->
       item.get "active"
@@ -153,9 +147,17 @@ TextChunk = Ember.View.extend(
 
 )
 
-SelectableChunks = Ember.CollectionView.extend(
+SelectableChunks = Ember.View.extend(
+  templateName: "templates_chunk_list"
   contentBinding: "App.ArticlesController.selected.chunks"
-  itemViewClass: TextChunk
+  select: (event)->
+    chunk.set('selected', false) for chunk in @content
+    event.context.set('selected', true)
+    console.log 'selected: ', event.context.content
+  selected: (->
+    #return chunk if chunk.get('selected') for chunk in @content
+    App.ArticlesController.selected.chunks[0]
+  ).property("App.ArticlesController.selected.chunks")
 )
 
 ArticlesList = Ember.View.extend(
@@ -175,6 +177,7 @@ app.ArticlesController = ArticlesController
 app.ResultsController = ResultsController
 app.ResultView = ResultView
 app.ArticlesList = ArticlesList
+app.TextChunk = TextChunk
 window.App = app
 ArticlesController.sync()
 WordsController.sync()

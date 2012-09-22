@@ -32,13 +32,31 @@ body {
 // @linkColor: #ff0000;
 
 
-.nav-pills > .active > a {
-background-color: #fff;
-color: black;
-border-color: black;
-border: 1px black solid;
-text-decoration:none; 
+.kindle-pills {
+  background-color: #fff !important;
+  color: black !important;
+  border-color: black;
+  border: 1px black solid;
+  text-decoration:none !important; 
 }
-.bigger-font {
-  font-size: 18px;
+
+.nav-pills {
+  a {
+    .kindle-pills
+  }
+  a:hovered {
+    .kindle-pills
+  }
+  a.visited {
+    .kindle-pills
+  }
+  
+  .active a {
+    border: 2px black solid;
+  }
+
+  a.bigger-font {
+    font-size: 24px;
+    line-height: 36px;
+  }
 }
