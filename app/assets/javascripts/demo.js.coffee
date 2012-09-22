@@ -1,34 +1,19 @@
 Article = Ember.Object.extend(
   title: ""
   content: ""
-  chunks: (->
-    console.log  "computing content..." + @content
-    if @content is `undefined`
-      []
-    else
-      console.log('computing chunks')
-      chunks = @get("content").match(/([^,.、。]+)([,.、。]+)/g)
-      return []  unless chunks
-      object_chunks = []
-      position = 0
-      chunks.forEach (item, index, self) ->
-        chunk = Ember.Object.create(
-          selected: false
-          position: position
-          length: item.length
-          content: item
-          letters: item.split("").map((item, index, self) ->
-            Ember.Object.create
-              content: item
-              index: index
-              chunk_start: position
-              active: false
-          )
-        )
-        object_chunks.push chunk
-        position = position + item.length
-      object_chunks
-  ).property("content")
+  position: 0
+  length: 20
+  line: (->
+    @content.slice @position, @position+@length
+    ).property('position')
+  letters: (->
+    lettersArray = []
+    lettersArray = @get('line').split('') if @get('line')
+    return Ember.ArrayController.create(
+      content: lettersArray) 
+    ).property("line")
+  a: ()->
+    "aaxxa"
 )
 
 ArticlesController = Ember.ArrayController.create(
@@ -99,39 +84,33 @@ ToogableView = Ember.Mixin.create(
       @set key, true
   )
 
+ArticleView = Ember.View.extend(
+  contentBinding: 'App.ArticlesController.selected'
+  templateName: "templates_article"
+  positionBinding: 'App.ArticlesController.selected.position'
+  length: (->
+    @content.length
+  ).property('content')
+  _letters: (->
+     return @get 'content'.get('line')
+  ).property()
+  select: (event)->
+    li = $(event.target).closest('li')
+    if li.hasClass('active')
+      li.removeClass('active')
+    else
+      li.addClass('active')
+    
+  move_left: ->
+    console.log 'left p:' + @position
+    console.log @get 'letters'
+    @set 'position', @position - 1 if @position > 0
+  move_right: ->
+    console.log 'right p:' + @position
+    @set 'position', @position + 1 
 
-SelectedChunkView = Ember.CollectionView.extend(
-  classNameBindings: ["hidden"]
-  content: (->
-    return []  if @text is `undefined`
-    @getPath "text.letters"
-  ).property("text")
-  classNames: "nav nav-pills"
-  tagName: "ul"
-  itemViewClass: Ember.View.extend(ToogableView,
-    tagName: "li"
-    activeBinding: "content.active"
-    classNameBindings: ["active"]
-    template: Ember.Handlebars.compile("<a href='#'>{{content.content}}</a>")
-    click: (event) ->
-      @toogle "active"
-      console.log @content.index + @content.chunk_start
-  )
-)
-
-TextChunk = Ember.View.extend(
-  hidden: (->
-    not @get("active")
-  ).property("active")
-  templateName: "templates_text_chunk" 
   search: (event) ->
-    selection = @getPath("content.letters").filter((item) ->
-      item.get "active"
-    ).map((item) ->
-      item.content
-    ).join("")
-    console.log selection
-    console.log "/dictionary/word/" + selection
+    selection = $('ul#letters li.active').text()
     $.get "/dictionary/word/" + selection, (data) ->
       
       ResultsController.pushObject(
@@ -142,22 +121,8 @@ TextChunk = Ember.View.extend(
           article_id: 1
         )
       ) for item in data
-      #make some button to select word and then add word to words collection
-      #App.data.articles.get('selected').words.push(result.get('firstObject'))
 
-)
 
-SelectableChunks = Ember.View.extend(
-  templateName: "templates_chunk_list"
-  contentBinding: "App.ArticlesController.selected.chunks"
-  select: (event)->
-    chunk.set('selected', false) for chunk in @content
-    event.context.set('selected', true)
-    console.log 'selected: ', event.context.content
-  selected: (->
-    #return chunk if chunk.get('selected') for chunk in @content
-    App.ArticlesController.selected.chunks[0]
-  ).property("App.ArticlesController.selected.chunks")
 )
 
 ArticlesList = Ember.View.extend(
@@ -170,14 +135,12 @@ ArticlesList = Ember.View.extend(
 )
 
 #$("body").append("<div class=\"alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>"+result_html+"</div>")
-app.SelectableChunks =  SelectableChunks
-app.SelectedChunkView = SelectedChunkView
 app.WordsController = WordsController
 app.ArticlesController = ArticlesController
 app.ResultsController = ResultsController
 app.ResultView = ResultView
 app.ArticlesList = ArticlesList
-app.TextChunk = TextChunk
+app.ArticleView = ArticleView
 window.App = app
 ArticlesController.sync()
 WordsController.sync()
