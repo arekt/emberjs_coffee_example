@@ -1,9 +1,5 @@
 - content_for :title, 'Demo Ember.js Application' 
-.container
-  .row
-    .span6
-      %script(type="text/x-handlebars")
-        {{view App.ArticlesList}}
+.container-fluid
   .row
     .span1
       %script(type="text/x-handlebars")
@@ -14,5 +10,8 @@
         {{/view}}
     .span5
       %script(type="text/x-handlebars")
-        {{view App.ArticleView}}
-        {{view App.ResultView}}
+        {{view App.ResultView class="row"}}
+        {{view App.ArticleView class="row"}}
+    .span6
+      %script(type="text/x-handlebars")
+        {{view App.ArticlesList}}
