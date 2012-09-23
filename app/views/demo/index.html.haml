@@ -4,11 +4,15 @@
     .span6
       %script(type="text/x-handlebars")
         {{view App.ArticlesList}}
+  .row
+    .span1
+      %script(type="text/x-handlebars")
         {{#view Ember.View wordsBinding="App.WordsController" class="nav nav-pills" tagName="ul" }}
         {{#each words }}
         <li class='active'><a href='#'>{{ kanji }}</a></li>
         {{/each}}
         {{/view}}
+    .span5
       %script(type="text/x-handlebars")
         {{view App.ArticleView}}
         {{view App.ResultView}}

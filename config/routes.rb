@@ -1,6 +1,8 @@
 EmberWithCoffee::Application.routes.draw do
-  resources :articles
-  resources :words
+  resources :articles do
+    resources :words, :only => [:index]
+  end
+  resources :words, :except => [:index]
 
   root :to => 'demo#index'
   match 'dictionary/word/:name' => 'demo#dictionary'

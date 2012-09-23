@@ -1,0 +1,17 @@
+<div class='span6'>
+<a class='btn' {{action move_left}}>LEFT</a>
+<a class='btn' {{action move_right}}>RIGHT</a>
+<a class='btn' {{action search}}>Search</a>
+</div>
+{{content.title}}
+
+<ul id='letters' class='nav nav-pills'>
+{{#each "content.letters"}}
+  <li><a {{action select}}>{{this}}</a></li>
+{{/each}}
+</ul>
+<p>
+  {{#each "content.selectable_content"}}
+  <span {{bindAttr id="this.k"}} {{action click}}> {{this.v}}</span>
+  {{/each}}
+</p>

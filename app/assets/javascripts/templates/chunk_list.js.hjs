@@ -1,0 +1,8 @@
+  <div class="pagination">
+    <ul>
+{{#each content}}
+      <li><a href='#' {{action select}} class='bigger-font'>{{this.content}}</a></li>
+{{/each}}
+    </ul>
+  </div>
+{{view App.TextChunk contentBinding="selected" class="span6"}}              

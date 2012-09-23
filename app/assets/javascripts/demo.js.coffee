@@ -1,19 +1,27 @@
 Article = Ember.Object.extend(
+  id: 0
   title: ""
   content: ""
   position: 0
-  length: 20
+  length: 5
   line: (->
-    @content.slice @position, @position+@length
+    start = @position
+    stop = start + length
+    @content.slice start, stop
     ).property('position')
   letters: (->
     lettersArray = []
     lettersArray = @get('line').split('') if @get('line')
     return Ember.ArrayController.create(
       content: lettersArray) 
-    ).property("line")
-  a: ()->
-    "aaxxa"
+    ).property("line","position")
+  selectable_content: (->
+    lettersArray =[]
+    lettersArray = @get('content').split('') if @get('content')
+    ac = Ember.ArrayController.create(content:[])
+    ac.pushObject({k:i, v:lettersArray[i]}) for i in [0..lettersArray.length]
+    ac
+    ).property("content")
 )
 
 ArticlesController = Ember.ArrayController.create(
@@ -31,13 +39,14 @@ ArticlesController = Ember.ArrayController.create(
   _selected : null
   select: (article) ->
     @set('_selected', article)
+    WordsController.sync(article)
 )
 
 
 WordsController = Ember.ArrayController.create(
   content: []
-  sync: ->
-    $.get("/words", (words)->
+  sync: (article)->
+    $.get("/articles/"+article.id+"/words", (words)->
       WordsController.pushObject Word.create(w) for w in words
     , 'json')
 )
@@ -61,7 +70,8 @@ ResultView = Ember.View.extend(
 Word = Ember.Object.extend(
   kanji : ""
   kana :""
-  description : ""
+  desc : ""
+  article_id : ""
   save : ->
     word =  
       word:  
@@ -91,9 +101,6 @@ ArticleView = Ember.View.extend(
   length: (->
     @content.length
   ).property('content')
-  _letters: (->
-     return @get 'content'.get('line')
-  ).property()
   select: (event)->
     li = $(event.target).closest('li')
     if li.hasClass('active')
@@ -118,11 +125,13 @@ ArticleView = Ember.View.extend(
           kanji: item[0]
           kana: item[1]
           desc: item[2]
-          article_id: 1
+          article_id: App.ArticlesController.get('selected').id
         )
       ) for item in data
-
-
+  click: (event) ->
+    @set 'position', event.target.id
+    console.log event.target.id
+    console.log letters
 )
 
 ArticlesList = Ember.View.extend(
@@ -143,5 +152,5 @@ app.ArticlesList = ArticlesList
 app.ArticleView = ArticleView
 window.App = app
 ArticlesController.sync()
-WordsController.sync()
+
 #chunks.append()

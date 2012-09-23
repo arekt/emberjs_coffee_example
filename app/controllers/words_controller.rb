@@ -1,12 +1,17 @@
 class WordsController < ApplicationController
+  before_filter :find_article, :only => :index
   # GET /words
   # GET /words.json
   def index
-    @words = Word.all
+    @words = @article.words.all if @article
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @words }
+
+      format.json { 
+        Rails.logger.debug "WORD: #{@words.to_json}"
+        render json: @words 
+      }
     end
   end
 
@@ -79,5 +84,9 @@ class WordsController < ApplicationController
       format.html { redirect_to words_url }
       format.json { head :no_content }
     end
+  end
+  private
+  def find_article
+    @article = Article.find(params[:article_id])
   end
 end
