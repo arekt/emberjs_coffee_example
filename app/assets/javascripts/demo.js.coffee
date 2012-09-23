@@ -3,18 +3,12 @@ Article = Ember.Object.extend(
   title: ""
   content: ""
   position: 0
-  length: 5
-  line: (->
-    start = @position
-    stop = start + length
-    @content.slice start, stop
-    ).property('position')
-  letters: (->
-    lettersArray = []
-    lettersArray = @get('line').split('') if @get('line')
-    return Ember.ArrayController.create(
-      content: lettersArray) 
-    ).property("line","position")
+  length: 10
+  zoomed_letters: (->
+    ac = Ember.ArrayController.create(content:[])
+    ac.pushObject(@content.slice(@position)[index] || '') for index in [0..@length]
+    return ac
+    ).property('content','position')
   selectable_content: (->
     lettersArray =[]
     lettersArray = @get('content').split('') if @get('content')
@@ -97,7 +91,6 @@ ToogableView = Ember.Mixin.create(
 ArticleView = Ember.View.extend(
   contentBinding: 'App.ArticlesController.selected'
   templateName: "templates_article"
-  positionBinding: 'App.ArticlesController.selected.position'
   length: (->
     @content.length
   ).property('content')
@@ -109,12 +102,9 @@ ArticleView = Ember.View.extend(
       li.addClass('active')
     
   move_left: ->
-    console.log 'left p:' + @position
-    console.log @get 'letters'
-    @set 'position', @position - 1 if @position > 0
+    @content.set 'position', @content.get('position') - 1 
   move_right: ->
-    console.log 'right p:' + @position
-    @set 'position', @position + 1 
+    @content.set 'position', @content.get('position') + 1 
 
   search: (event) ->
     selection = $('ul#letters li.active').text()
@@ -128,10 +118,10 @@ ArticleView = Ember.View.extend(
           article_id: App.ArticlesController.get('selected').id
         )
       ) for item in data
-  click: (event) ->
-    @set 'position', event.target.id
+  set_zoom: (event) ->
+    @get('content').set('position', event.target.id)
     console.log event.target.id
-    console.log letters
+    console.log @content.get('zoomed_letters').content
 )
 
 ArticlesList = Ember.View.extend(

@@ -6,12 +6,12 @@
 {{content.title}}
 
 <ul id='letters' class='nav nav-pills'>
-{{#each "content.letters"}}
+{{#each "content.zoomed_letters"}}
   <li><a {{action select}}>{{this}}</a></li>
 {{/each}}
 </ul>
 <p>
   {{#each "content.selectable_content"}}
-  <span {{bindAttr id="this.k"}} {{action click}}> {{this.v}}</span>
+  <span {{bindAttr id="this.k"}} {{action set_zoom}}> {{this.v}}</span>
   {{/each}}
 </p>
