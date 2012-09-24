@@ -39,7 +39,12 @@ ArticlesController = Ember.ArrayController.create(
 
 WordsController = Ember.ArrayController.create(
   content: []
+  find: (word_id)->
+    console.log "find("+word_id+")"
+    word = @get("content").findProperty("id", parseInt(word_id))
+    word
   sync: (article)->
+    @set("content",[])
     $.get("/articles/"+article.id+"/words", (words)->
       WordsController.pushObject Word.create(w) for w in words
     , 'json')
@@ -66,6 +71,10 @@ Word = Ember.Object.extend(
   kana :""
   desc : ""
   article_id : ""
+  mode: "kanji"
+  display: (->
+    @get(@mode)
+  ).property("mode") 
   save : ->
     word =  
       word:  
@@ -133,6 +142,17 @@ ArticlesList = Ember.View.extend(
     ArticlesController.select(event.context)
 )
 
+WordsView = Ember.View.extend(
+  click: (event) ->
+    jq_word = $(event.target).closest("a")
+    word = WordsController.find(jq_word.attr('id'))
+    if word.get('mode') == "kanji"
+      word.set('mode',"kana")
+    else
+      word.set('mode',"kanji")
+)
+
+
 #$("body").append("<div class=\"alert alert-info\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>"+result_html+"</div>")
 app.WordsController = WordsController
 app.ArticlesController = ArticlesController
@@ -140,6 +160,7 @@ app.ResultsController = ResultsController
 app.ResultView = ResultView
 app.ArticlesList = ArticlesList
 app.ArticleView = ArticleView
+app.WordsView = WordsView
 window.App = app
 ArticlesController.sync()
 

@@ -3,9 +3,9 @@
   .row
     .span1
       %script(type="text/x-handlebars")
-        {{#view Ember.View wordsBinding="App.WordsController" class="nav nav-pills" tagName="ul" }}
+        {{#view App.WordsView wordsBinding="App.WordsController" class="nav nav-pills" tagName="ul" }}
         {{#each words }}
-        <li class='active'><a href='#'>{{ kanji }}</a></li>
+        <li class='active'><a href='#' {{bindAttr id="id"}}>{{display}}</a></li>
         {{/each}}
         {{/view}}
     .span5
