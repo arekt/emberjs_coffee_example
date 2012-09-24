@@ -1,4 +1,4 @@
-  <div class='span4'>
+  <div class='span4' id='text'>
     <a class='btn' {{action move_left}}>LEFT</a>
     <a class='btn' {{action move_right}}>RIGHT</a>
     <a class='btn' {{action search}}>Search</a>
@@ -11,7 +11,7 @@
       {{/each}}
     </p>
   </div>
-  <div class='span1'>
+  <div class='span1' id='zoom'>
     <ul id='letters' class='nav nav-pills'>
       {{#each "content.zoomed_letters"}}
         <li><a {{action select}}>{{this}}</a></li>
