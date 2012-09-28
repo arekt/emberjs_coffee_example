@@ -3,7 +3,9 @@ class WordsController < ApplicationController
   # GET /words
   # GET /words.json
   def index
-    @words = @article.words.all if @article
+    position = params[:position].to_i || 0
+    range = (position..(position+12)) 
+    @words = Word.where(:article_id => @article.id, :position => range).all if @article
 
     respond_to do |format|
       format.html # index.html.erb
@@ -46,7 +48,7 @@ class WordsController < ApplicationController
   # POST /words.json
   def create
     @word = Word.new(params[:word])
-
+    Rails.logger.debug @word.to_json
     respond_to do |format|
       if @word.save
         format.html { redirect_to @word, notice: 'Word was successfully created.' }

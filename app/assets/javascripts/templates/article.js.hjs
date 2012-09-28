@@ -14,7 +14,7 @@
   <div class='span1' id='zoom'>
     <ul id='letters' class='nav nav-pills'>
       {{#each "content.zoomed_letters"}}
-        <li><a {{action select}}>{{this}}</a></li>
+        <li {{bindAttr id="this.id"}}><a {{action select}}>{{this.letter}}</a></li>
       {{/each}}
     </ul>
   </div>

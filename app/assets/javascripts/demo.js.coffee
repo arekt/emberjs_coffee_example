@@ -6,7 +6,7 @@ Article = Ember.Object.extend(
   length: 10
   zoomed_letters: (->
     ac = Ember.ArrayController.create(content:[])
-    ac.pushObject(@content.slice(@position)[index] || '') for index in [0..@length]
+    ac.pushObject({letter: @content.slice(@position)[index] || '', id:index}) for index in [0..@length]
     return ac
     ).property('content','position')
   selectable_content: (->
@@ -36,16 +36,18 @@ ArticlesController = Ember.ArrayController.create(
     WordsController.sync(article)
 )
 
-
 WordsController = Ember.ArrayController.create(
   content: []
   find: (word_id)->
     console.log "find("+word_id+")"
     word = @get("content").findProperty("id", parseInt(word_id))
     word
+  word_position: ->
+    parseInt(ArticlesController.get('selected').get('position'))+parseInt($('ul#letters li.active').first().attr('id') || 0 )
   sync: (article)->
     @set("content",[])
-    $.get("/articles/"+article.id+"/words", (words)->
+    position = 
+    $.get("/articles/"+article.id+"/words?position="+@word_position(), (words)->
       WordsController.pushObject Word.create(w) for w in words
     , 'json')
 )
@@ -67,6 +69,7 @@ ResultView = Ember.View.extend(
 )
 
 Word = Ember.Object.extend(
+  position: 0
   kanji : ""
   kana :""
   desc : ""
@@ -83,6 +86,7 @@ Word = Ember.Object.extend(
         kana: @kana
         desc: @desc
         article_id: @article_id
+        position: @position
     $.post('words',word)
 )
 
@@ -109,6 +113,7 @@ ArticleView = Ember.View.extend(
       li.removeClass('active')
     else
       li.addClass('active')
+      $('a.popover').popover('hide')
     
   move_left: ->
     @content.set 'position', @content.get('position') - 1 
@@ -121,6 +126,7 @@ ArticleView = Ember.View.extend(
       
       ResultsController.pushObject(
         Word.create(
+          position: WordsController.word_position()
           kanji: item[0]
           kana: item[1]
           desc: item[2]
@@ -129,6 +135,7 @@ ArticleView = Ember.View.extend(
       ) for item in data
   set_zoom: (event) ->
     @get('content').set('position', event.target.id)
+    WordsController.sync(ArticlesController.get('selected'))
     console.log event.target.id
     console.log @content.get('zoomed_letters').content
 )
