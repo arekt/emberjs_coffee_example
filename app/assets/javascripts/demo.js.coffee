@@ -10,11 +10,13 @@ Article = Ember.Object.extend(
     return ac
     ).property('content','position')
   selectable_content: (->
-    lettersArray =[]
-    lettersArray = @get('content').split('') if @get('content')
-    ac = Ember.ArrayController.create(content:[])
-    ac.pushObject({k:i, v:lettersArray[i]}) for i in [0..lettersArray.length]
-    ac
+    if @get('content')
+      letters = lettersArray = @get('content').split('') 
+    else
+      letters = []
+    return (letters.map (l,i)->
+      "<span id='"+i+"'>"+l+"</span>"
+      ).join("")
     ).property("content")
 )
 

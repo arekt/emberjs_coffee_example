@@ -2,14 +2,8 @@
     <a class='btn' {{action move_left}}>LEFT</a>
     <a class='btn' {{action move_right}}>RIGHT</a>
     <a class='btn' {{action search}}>Search</a>
-    
     {{content.title}}
-
-    <p>
-      {{#each "content.selectable_content"}}
-        <span {{bindAttr id="this.k"}}{{action set_zoom}}>{{this.v}}</span>
-      {{/each}}
-    </p>
+    <p class='article_content' {{action set_zoom}}>{{{content.selectable_content}}}</p>
   </div>
   <div class='span1' id='zoom'>
     <ul id='letters' class='nav nav-pills'>
