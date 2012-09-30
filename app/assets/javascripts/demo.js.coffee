@@ -155,10 +155,7 @@ WordsView = Ember.View.extend(
   click: (event) ->
     jq_word = $(event.target).closest("a")
     word = WordsController.find(jq_word.attr('id'))
-    if word.get('mode') == "kanji"
-      word.set('mode',"kana")
-    else
-      word.set('mode',"kanji")
+    ResultsController.pushObject(word)
 )
 
 
