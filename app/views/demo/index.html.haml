@@ -15,3 +15,7 @@
     .span6
       %script(type="text/x-handlebars")
         {{view App.ArticlesList}}
+        / - @article.content.split('').each_with_index do |l,index|
+        /   %span{:class=>"#{index}"}
+        /     = l.strip
+

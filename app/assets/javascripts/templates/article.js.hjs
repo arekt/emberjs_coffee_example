@@ -7,7 +7,7 @@
 
     <p>
       {{#each "content.selectable_content"}}
-        <span {{bindAttr id="this.k"}} {{action set_zoom}}> {{this.v}}</span>
+        <span {{bindAttr id="this.k"}}{{action set_zoom}}>{{this.v}}</span>
       {{/each}}
     </p>
   </div>

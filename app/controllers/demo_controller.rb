@@ -2,6 +2,7 @@ require 'kanji_dictionary'
 class DemoController < ApplicationController
   def index
     Rails.logger.debug "DEBUG: Demo/index"
+    @article = Article.last
   end
   def dictionary
     dictionary = KanjiDictionary.new
